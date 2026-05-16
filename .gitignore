@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+frontend/.next
+frontend/tsconfig.tsbuildinfo
+frontend/.env.local
+/app
+tsx
+tcss460-group-project-backend@0.0.0
