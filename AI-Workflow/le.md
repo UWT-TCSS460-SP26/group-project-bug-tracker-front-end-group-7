@@ -106,7 +106,7 @@ Current implementation in `bug-tracker-fe/src/app/page.tsx`:
 
 <img width="1119" height="898" alt="image" src="https://github.com/user-attachments/assets/13be9874-5ecd-4e3d-b187-d73ed3ef9eea" />
 
-**Admin - Light**
+**ADMIN - LIGHT**
 
 <img width="1280" height="632" alt="image" src="https://github.com/user-attachments/assets/fdceb682-2c9d-4729-bf39-424108b6c599" />
 
