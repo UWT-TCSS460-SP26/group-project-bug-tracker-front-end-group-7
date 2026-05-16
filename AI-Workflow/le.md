@@ -99,3 +99,16 @@ Current implementation in `bug-tracker-fe/src/app/page.tsx`:
 2. **Styling instructions were understood:** The styling that the AI developed was very straightforward and it understood what my prompts were asking it to do. Even with the new prompts that adjusted the page layout, the AI implemented them successfully with no errors.
 
 3. **Backend and middleware context:** Giving the AI more context about the backend, middleware, and what I wanted to apply could be improved. I'm not sure if telling it more about how the middleware works would have helped the AI successfully implement it on the first prompt instead of having to make a second prompt to fix errors.
+
+**SAMPLE IMAGES:**
+
+**BUG REPORT - DARK**
+
+<img width="1119" height="898" alt="image" src="https://github.com/user-attachments/assets/13be9874-5ecd-4e3d-b187-d73ed3ef9eea" />
+
+**Admin - Light**
+
+<img width="1280" height="632" alt="image" src="https://github.com/user-attachments/assets/fdceb682-2c9d-4729-bf39-424108b6c599" />
+
+
+
