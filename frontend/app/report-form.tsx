@@ -22,7 +22,7 @@ type Issue = {
   priority: number;
   title: string;
   description: string;
-  reporterName: string;
+  reporterName?: string | null;
   reproSteps?: string | null;
   reporterContact: string;
   status: 'UNSOLVED' | 'IN_PROGRESS' | 'FIXED';
@@ -87,8 +87,8 @@ function collectFieldErrors(details?: ApiErrorDetails): FieldErrors {
   return errors;
 }
 
-function splitReporterName(name: string): { firstName: string; lastName: string } {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
+function splitReporterName(name?: string | null): { firstName: string; lastName: string } {
+  const parts = (name ?? '').trim().split(/\s+/).filter(Boolean);
 
   if (parts.length <= 1) {
     return {
@@ -116,6 +116,32 @@ function getLatestIssueCreatedAt(issues: Issue[]): string | null {
   }
 
   return latestCreatedAt;
+}
+
+function validateRequiredReportFields(values: FormValues): FieldErrors {
+  const errors: FieldErrors = {};
+
+  if (!values.title.trim()) {
+    errors.title = 'Bug title is required.';
+  }
+
+  if (!values.description.trim()) {
+    errors.description = 'What happened is required.';
+  }
+
+  if (!values.reporterFirstName.trim()) {
+    errors.reporterFirstName = 'First name is required.';
+  }
+
+  if (!values.reporterLastName.trim()) {
+    errors.reporterLastName = 'Last name is required.';
+  }
+
+  if (!values.reporterContact.trim()) {
+    errors.reporterContact = 'Contact info is required.';
+  }
+
+  return errors;
 }
 
 export function BugReportForm() {
@@ -149,7 +175,7 @@ export function BugReportForm() {
   const viewerStatusMenuRef = useRef<HTMLDivElement>(null);
   const viewerPriorityMenuRef = useRef<HTMLDivElement>(null);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = '/api';
 
   useEffect(() => {
     const savedToken = sessionStorage.getItem('bugViewerToken');
@@ -285,14 +311,6 @@ export function BugReportForm() {
     setTokenError(null);
     setIssueLoadMessage(null);
 
-    if (!apiUrl) {
-      setTokenError(
-        'The bug report viewer is not configured yet. Set NEXT_PUBLIC_API_URL and try again.'
-      );
-      setIsLoadingIssues(false);
-      return;
-    }
-
     if (!tokenValue.trim()) {
       setTokenError('Enter a bearer token from the OAuth2/Auth2 flow to view bug reports.');
       setIsLoadingIssues(false);
@@ -300,7 +318,7 @@ export function BugReportForm() {
     }
 
     try {
-      const response = await fetch(`${apiUrl.replace(/\/$/, '')}/v1/issues`, {
+      const response = await fetch(`${apiUrl}/issues`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${tokenValue.trim()}`,
@@ -361,6 +379,11 @@ export function BugReportForm() {
         return;
       }
 
+      if (typeof body === 'object' && body && 'error' in body && typeof body.error === 'string') {
+        setTokenError(body.error);
+        return;
+      }
+
       setTokenError('We could not load bug reports right now. Please try again in a moment.');
     } catch {
       setTokenError('We could not reach the bug report service. Check the API URL or try again.');
@@ -416,10 +439,9 @@ export function BugReportForm() {
     setSuccessMessage(null);
     setFieldErrors({});
 
-    if (!apiUrl) {
-      setServerError(
-        'The bug report form is not configured yet. Set NEXT_PUBLIC_API_URL and try again.'
-      );
+    const requiredFieldErrors = validateRequiredReportFields(values);
+    if (Object.keys(requiredFieldErrors).length > 0) {
+      setFieldErrors(requiredFieldErrors);
       setIsSubmitting(false);
       return;
     }
@@ -434,7 +456,7 @@ export function BugReportForm() {
     };
 
     try {
-      const response = await fetch(`${apiUrl.replace(/\/$/, '')}/v1/issues`, {
+      const response = await fetch(`${apiUrl}/issues`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -463,7 +485,6 @@ export function BugReportForm() {
 
       if (response.status === 400) {
         setFieldErrors(collectFieldErrors(body?.details));
-        setServerError(body?.error ?? 'Please fix the highlighted fields and try again.');
         return;
       }
 
@@ -485,7 +506,7 @@ export function BugReportForm() {
   }
 
   async function updateIssueStatus(issueId: number, status: Issue['status']) {
-    if (!apiUrl || !tokenValue.trim()) {
+    if (!tokenValue.trim()) {
       setTokenError('A verified bearer token is required before updating a bug report.');
       return;
     }
@@ -495,7 +516,7 @@ export function BugReportForm() {
     setIssueLoadMessage(null);
 
     try {
-      const response = await fetch(`${apiUrl.replace(/\/$/, '')}/v1/issues/${issueId}/status`, {
+      const response = await fetch(`${apiUrl}/issues/${issueId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -533,7 +554,7 @@ export function BugReportForm() {
   }
 
   async function deleteIssue(issueId: number) {
-    if (!apiUrl || !tokenValue.trim()) {
+    if (!tokenValue.trim()) {
       setTokenError('A verified bearer token is required before deleting a bug report.');
       return;
     }
@@ -548,7 +569,7 @@ export function BugReportForm() {
     setIssueLoadMessage(null);
 
     try {
-      const response = await fetch(`${apiUrl.replace(/\/$/, '')}/v1/issues/${issueId}`, {
+      const response = await fetch(`${apiUrl}/issues/${issueId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${tokenValue.trim()}`,
@@ -643,6 +664,8 @@ export function BugReportForm() {
   const selectedIssue =
     visibleIssues.find((issue) => issue.id === selectedIssueId) ?? visibleIssues[0] ?? null;
   const selectedIssueName = selectedIssue ? splitReporterName(selectedIssue.reporterName) : null;
+  const selectedIssueReporterLabel =
+    selectedIssue?.reporterName?.trim() || 'Reporter unavailable';
 
   return (
     <main className="page-shell">
@@ -721,7 +744,7 @@ export function BugReportForm() {
             </div>
           ) : null}
 
-          {serverError || Object.keys(fieldErrors).length > 0 ? (
+          {serverError ? (
             <div
               ref={summaryRef}
               tabIndex={-1}
@@ -729,7 +752,7 @@ export function BugReportForm() {
               aria-live="assertive"
             >
               <h2>There was a problem</h2>
-              <p>{serverError ?? 'Please review the highlighted fields and try again.'}</p>
+              <p>{serverError}</p>
             </div>
           ) : null}
 
@@ -1224,7 +1247,7 @@ export function BugReportForm() {
                             ? [selectedIssueName.firstName, selectedIssueName.lastName]
                                 .filter(Boolean)
                                 .join(' ')
-                            : selectedIssue.reporterName}
+                            : selectedIssueReporterLabel}
                         </p>
                       </div>
 
