@@ -488,6 +488,17 @@ export function BugReportForm() {
         return;
       }
 
+      if (body?.error) {
+        if (response.status === 401) {
+          setServerError(
+            `${body.error} The deployed API is currently requiring authentication for new bug reports, so public submission is blocked until that backend route is made public again.`
+          );
+        } else {
+          setServerError(body.error);
+        }
+        return;
+      }
+
       setServerError(
         'We could not submit your report right now because the service is unavailable. Your details are still here, so please try again in a moment.'
       );
@@ -1269,7 +1280,11 @@ export function BugReportForm() {
                             </span>
                           </button>
                           {isStatusMenuOpen ? (
-                            <div className="status-menu" role="listbox" aria-labelledby="issueStatusSelect">
+                            <div
+                              className="status-menu status-menu-up"
+                              role="listbox"
+                              aria-labelledby="issueStatusSelect"
+                            >
                               {(['UNSOLVED', 'IN_PROGRESS', 'FIXED'] as Issue['status'][]).map((statusOption) => (
                                 <button
                                   key={statusOption}
