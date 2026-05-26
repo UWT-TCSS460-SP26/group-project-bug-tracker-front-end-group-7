@@ -125,7 +125,7 @@ So if I were describing what got cut from the real Sprint 5 scope, it would be:
 
 ## What you would do differently next time
 
-If I did this again, I would probably prompt AI with a little more details as to what I wanted. However, at the time, I didn't really have a vision as to how I wanted the bug report to look and feel. 
+If I did this again, I would probably prompt AI with a little more details as to what I wanted. However, at the time, I didn't really have a vision as to how I wanted the bug report to look and feel.
 
 What I would do differently:
 

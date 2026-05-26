@@ -10,15 +10,26 @@
   "scripts": {
     "dev": "next dev frontend --port ${PORT:-3501} --webpack",
     "build": "next build frontend",
-    "start": "next start frontend --port ${PORT:-3501}"
+    "start": "next start frontend --port ${PORT:-3501}",
+    "lint": "eslint frontend",
+    "lint:fix": "eslint frontend --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.6",
+    "eslint-config-prettier": "^10.1.8",
     "next": "^16.2.6",
+    "prettier": "^3.8.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "typescript": "~5.9"
+  },
+  "dependencies": {
+    "next-auth": "^5.0.0-beta.31"
   }
 }

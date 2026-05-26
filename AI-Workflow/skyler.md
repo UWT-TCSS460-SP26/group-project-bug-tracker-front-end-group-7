@@ -74,6 +74,7 @@ Once the form was working I asked for a triage dashboard. The agent immediately 
 **What the agent produced:**
 
 A full `/dashboard` page with:
+
 - Stats bar (total / unsolved / in-progress / fixed)
 - Filter tabs by status with an animated underline indicator
 - Priority filter pills (All / Low / Medium / High)
@@ -106,14 +107,14 @@ All of it used mock data so the UI was fully interactive without any real API ca
 
 ## What the Agent Built (Final State)
 
-| File | What it does |
-|---|---|
-| `app/page.tsx` | Public bug report form with all three states (success, validation error, network error) |
-| `app/api/issues/route.ts` | Server-side proxy — keeps the BE URL server-side, never in the browser |
-| `app/dashboard/page.tsx` | Admin triage dashboard with mock data, filters, detail panel, delete confirmation |
-| `app/layout.tsx` | Root layout with metadata and Geist font |
-| `app/globals.css` | Warm amber/stone CSS variables |
-| `.env.local` | `API_BASE_URL` env var (gitignored) |
+| File                      | What it does                                                                            |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| `app/page.tsx`            | Public bug report form with all three states (success, validation error, network error) |
+| `app/api/issues/route.ts` | Server-side proxy — keeps the BE URL server-side, never in the browser                  |
+| `app/dashboard/page.tsx`  | Admin triage dashboard with mock data, filters, detail panel, delete confirmation       |
+| `app/layout.tsx`          | Root layout with metadata and Geist font                                                |
+| `app/globals.css`         | Warm amber/stone CSS variables                                                          |
+| `.env.local`              | `API_BASE_URL` env var (gitignored)                                                     |
 
 ![alt text](images/skyler-1.png)
 
