@@ -1,4 +1,6 @@
-const BUG_REPORT_API_URL = 'https://tcss-460-group-7.onrender.com';
+const BUG_REPORT_API_URL = (
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://tcss-460-group-7.onrender.com'
+).replace(/\/$/, '');
 
 export const buildApiUrl = (path = ''): string => {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
