@@ -238,7 +238,8 @@ export function BugReportForm({ initialView = 'report' }: BugReportFormProps) {
     (TRIAGE_PREVIEW_ENABLED ||
       (TRIAGE_PREVIEW_BUTTON_BYPASS_ENABLED && isPreviewAccessRequested));
   const hasTriageAccess = isSignedIn || isPreviewMode;
-  const adminCallbackUrl = '/?view=admin';
+  const adminCallbackUrl =
+    typeof window === 'undefined' ? '/?view=admin' : `${window.location.origin}/?view=admin`;
 
   const resetAdminViewState = useCallback(() => {
     setIssues([]);
