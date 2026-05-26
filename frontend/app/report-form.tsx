@@ -70,6 +70,8 @@ const BUG_REPORT_POSTED_EVENT = 'bug-report-posted';
 const TRIAGE_PREVIEW_ENABLED = process.env.NEXT_PUBLIC_TRIAGE_PREVIEW === 'true';
 const TRIAGE_PREVIEW_BUTTON_BYPASS_ENABLED =
   process.env.NEXT_PUBLIC_TRIAGE_PREVIEW_BUTTON_BYPASS === 'true';
+const MOBILE_USER_AGENT_PATTERN =
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
 
 const TRIAGE_PREVIEW_ISSUES: Issue[] = [
   {
@@ -197,8 +199,28 @@ function validateRequiredReportFields(values: FormValues): FieldErrors {
   return errors;
 }
 
+function detectMobileDevice() {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  const { navigator } = window;
+  const userAgentData = (navigator as Navigator & { userAgentData?: { mobile?: boolean } })
+    .userAgentData;
+  if (typeof userAgentData?.mobile === 'boolean') {
+    return userAgentData.mobile;
+  }
+
+  const isMobileUserAgent = MOBILE_USER_AGENT_PATTERN.test(navigator.userAgent);
+  const hasCompactViewport = window.matchMedia('(max-width: 820px)').matches;
+  const prefersCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
+  return isMobileUserAgent || (hasCompactViewport && prefersCoarsePointer);
+}
+
 export function BugReportForm({ initialView = 'report' }: BugReportFormProps) {
   const [activeView, setActiveView] = useState<ViewMode>(initialView);
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [isPreviewAccessRequested, setIsPreviewAccessRequested] = useState(false);
   const [values, setValues] = useState<FormValues>(INITIAL_VALUES);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -261,6 +283,27 @@ export function BugReportForm({ initialView = 'report' }: BugReportFormProps) {
   useEffect(() => {
     hasAutoLoadedIssuesRef.current = false;
   }, [accessToken, isPreviewMode]);
+
+  useEffect(() => {
+    const mobileMediaQuery = window.matchMedia('(max-width: 820px)');
+    const pointerMediaQuery = window.matchMedia('(pointer: coarse)');
+
+    function updateMobileState() {
+      setIsMobileDevice(detectMobileDevice());
+    }
+
+    updateMobileState();
+
+    mobileMediaQuery.addEventListener('change', updateMobileState);
+    pointerMediaQuery.addEventListener('change', updateMobileState);
+    window.addEventListener('resize', updateMobileState);
+
+    return () => {
+      mobileMediaQuery.removeEventListener('change', updateMobileState);
+      pointerMediaQuery.removeEventListener('change', updateMobileState);
+      window.removeEventListener('resize', updateMobileState);
+    };
+  }, []);
 
   const loadIssues = useCallback(async () => {
     setIsLoadingIssues(true);
@@ -765,7 +808,7 @@ export function BugReportForm({ initialView = 'report' }: BugReportFormProps) {
   const selectedIssueReporterLabel = selectedIssue?.reporterName?.trim() || 'Reporter unavailable';
 
   return (
-    <main className="page-shell">
+    <main className={isMobileDevice ? 'page-shell is-mobile-device' : 'page-shell'}>
       {activeView === 'report' ? (
         <section
           className="hero-card"

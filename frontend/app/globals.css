@@ -54,6 +54,12 @@ button {
   overflow: hidden;
 }
 
+.page-shell.is-mobile-device {
+  place-items: start;
+  padding: 20px 12px 28px;
+  overflow: visible;
+}
+
 .page-shell::before,
 .page-shell::after {
   content: '';
@@ -91,6 +97,12 @@ button {
   overflow: visible;
 }
 
+.page-shell.is-mobile-device .hero-card {
+  width: 100%;
+  padding: 20px 16px 18px;
+  border-radius: 24px;
+}
+
 .tab-list {
   display: flex;
   flex-wrap: nowrap;
@@ -101,6 +113,15 @@ button {
   right: -11px;
   transform: translateY(-100%);
   z-index: 3;
+}
+
+.page-shell.is-mobile-device .tab-list {
+  position: static;
+  right: auto;
+  top: auto;
+  transform: none;
+  flex-wrap: wrap;
+  justify-content: stretch;
 }
 
 .hero-card::before {
@@ -137,10 +158,23 @@ button {
   padding-top: 5px;
 }
 
+.page-shell.is-mobile-device .hero-topbar,
+.page-shell.is-mobile-device .hero-grid,
+.page-shell.is-mobile-device .split-fields,
+.page-shell.is-mobile-device .viewer-toolbar,
+.page-shell.is-mobile-device .viewer-filterbar,
+.page-shell.is-mobile-device .viewer-layout {
+  grid-template-columns: 1fr;
+}
+
 .hero-topbar-right {
   display: grid;
   gap: 12px;
   justify-items: end;
+}
+
+.page-shell.is-mobile-device .hero-topbar-right {
+  justify-items: stretch;
 }
 
 .hero-pills {
@@ -176,8 +210,16 @@ button {
   align-items: stretch;
 }
 
+.page-shell.is-mobile-device .hero-grid {
+  gap: 18px;
+}
+
 .hero-copy {
   max-width: 58ch;
+}
+
+.page-shell.is-mobile-device .hero-copy {
+  max-width: none;
 }
 
 .hero-copy-with-illustration {
@@ -276,9 +318,22 @@ h1 {
   opacity: 0.96;
 }
 
+.page-shell.is-mobile-device .auth-illustration {
+  position: static;
+  width: min(180px, 100%);
+  margin: 0 auto 12px;
+}
+
 .report-form-signed-out .auth-illustration {
   top: auto;
   bottom: 56px;
+}
+
+.page-shell.is-mobile-device .report-form-signed-out {
+  margin-top: 24px;
+  margin-bottom: 0;
+  padding-left: 0;
+  width: 100%;
 }
 
 .auth-illustration-triage {
@@ -304,6 +359,12 @@ h1 {
   margin-bottom: 15px;
 }
 
+.page-shell.is-mobile-device .viewer-toolbar,
+.page-shell.is-mobile-device .viewer-filterbar {
+  gap: 14px;
+  align-items: stretch;
+}
+
 .viewer-toolbar-signed-out {
   grid-template-columns: minmax(0, 1fr);
   min-height: 0;
@@ -316,6 +377,10 @@ h1 {
   display: flex;
   gap: 12px;
   align-items: center;
+}
+
+.page-shell.is-mobile-device .viewer-actions {
+  flex-wrap: wrap;
 }
 
 .viewer-actions-centered {
@@ -347,6 +412,10 @@ h1 {
   font-size: 0.9rem;
   line-height: 1.45;
   white-space: nowrap;
+}
+
+.page-shell.is-mobile-device .signed-out-auth-intro {
+  white-space: normal;
 }
 
 .viewer-toolbar-auth-block .viewer-actions-centered {
@@ -551,6 +620,13 @@ button {
   padding: 13px 18px 12px;
 }
 
+.page-shell.is-mobile-device .tab-button {
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 200, 0, 0.16);
+  border-radius: 18px;
+  text-align: center;
+}
+
 .tab-button.is-active {
   color: #111111;
   background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%);
@@ -573,6 +649,11 @@ button {
   font-size: 1.05rem;
 }
 
+.page-shell.is-mobile-device .auth-sign-in-button {
+  min-width: 0;
+  width: 100%;
+}
+
 .ghost-button:hover:not(:disabled) {
   transform: translateY(-1px);
 }
@@ -591,6 +672,10 @@ button {
   align-items: start;
 }
 
+.page-shell.is-mobile-device .viewer-layout {
+  gap: 18px;
+}
+
 .issue-list-panel {
   padding: 18px;
   border: 1px solid rgba(255, 200, 0, 0.14);
@@ -598,6 +683,10 @@ button {
   background: linear-gradient(180deg, rgba(10, 10, 10, 0.78), rgba(20, 20, 20, 0.92));
   max-height: 760px;
   overflow: hidden;
+}
+
+.page-shell.is-mobile-device .issue-list-panel {
+  max-height: none;
 }
 
 .issue-list-panel-header {
@@ -624,6 +713,11 @@ button {
   max-height: 680px;
   overflow: auto;
   padding-right: 4px;
+}
+
+.page-shell.is-mobile-device .issue-list {
+  max-height: 360px;
+  padding-right: 0;
 }
 
 .issue-list-item {
@@ -660,6 +754,13 @@ button {
   justify-content: space-between;
   gap: 12px;
   align-items: center;
+}
+
+.page-shell.is-mobile-device .issue-list-item-top,
+.page-shell.is-mobile-device .issue-list-item-bottom,
+.page-shell.is-mobile-device .issue-card-top {
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .issue-list-item-bottom {
@@ -713,6 +814,10 @@ button {
   justify-content: flex-end;
 }
 
+.page-shell.is-mobile-device .issue-tags {
+  justify-content: flex-start;
+}
+
 .issue-tags span {
   text-transform: capitalize;
   padding: 7px 11px;
@@ -760,6 +865,10 @@ button {
   line-height: 1.55;
 }
 
+.page-shell.is-mobile-device .issue-section p {
+  overflow-wrap: anywhere;
+}
+
 .issue-footnote {
   margin-top: 18px;
   color: var(--muted);
@@ -782,6 +891,10 @@ button {
   position: relative;
 }
 
+.page-shell.is-mobile-device .status-field {
+  max-width: none;
+}
+
 .status-field label {
   padding-left: 20px;
 }
@@ -792,6 +905,10 @@ button {
   margin-top: 18px;
 }
 
+.page-shell.is-mobile-device .delete-row {
+  justify-content: stretch;
+}
+
 .delete-button {
   margin-top: 0;
   padding: 11px 24px;
@@ -799,6 +916,10 @@ button {
   background: rgba(88, 17, 31, 0.9);
   border: 1px solid rgba(255, 77, 109, 0.28);
   box-shadow: none;
+}
+
+.page-shell.is-mobile-device .delete-button {
+  width: 100%;
 }
 
 .delete-button:hover:not(:disabled) {
